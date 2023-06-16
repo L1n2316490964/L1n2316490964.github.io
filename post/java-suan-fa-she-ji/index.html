@@ -1,0 +1,544 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Java算法设计 | Gridea</title>
+<link rel="shortcut icon" href="https://L1n2316490964.github.io//favicon.ico?v=1686891605281">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://L1n2316490964.github.io//styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Java算法设计 | Gridea - Atom Feed" href="https://L1n2316490964.github.io//atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="//  Example9_9.java
+public class Example9_9 {
+public static void main(String args[]) {
+WindowDocument win=new WindowDocu..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://L1n2316490964.github.io/">
+  <img class="avatar" src="https://L1n2316490964.github.io//images/avatar.png?v=1686891605281" alt="">
+  </a>
+  <h1 class="site-title">
+    Gridea
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Java算法设计
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-06-16
+              </span>
+              <span>
+                9 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <p>//  Example9_9.java</p>
+<p>public class Example9_9 {<br>
+public static void main(String args[]) {<br>
+WindowDocument win=new WindowDocument();<br>
+win.setBounds(100,100,890,460);<br>
+win.setTitle(&quot;计算&quot;);<br>
+}<br>
+}</p>
+<p>//  ExpressionEvaluation.java</p>
+<p>import java.util.Stack;</p>
+<p>public class ExpressionEvaluation {</p>
+<pre><code>private static int precedence(char operator) {
+    if (operator == '+' || operator == '-') {
+        return 1;
+    } else if (operator == '*' || operator == '/') {
+        return 2;
+    } else if (operator == '^') {
+        return 3;
+    } else {
+        return -1;
+    }
+}
+
+private static double applyOp(char operator, double a, double b) {
+    switch(operator) {
+        case '+':
+            return a + b;
+        case '-':
+            return a - b;
+        case '*':
+            return a * b;
+        case '/':
+            if (b == 0)
+                throw new UnsupportedOperationException(&quot;Cannot divide by zero&quot;);
+            return a / b;
+        case '^':
+            return Math.pow(a, b);
+    }
+    return 0;
+}
+
+public static double evaluate(String expression) {
+    char[] tokens = expression.toCharArray();
+
+    Stack&lt;Double&gt; values = new Stack&lt;&gt;();
+    Stack&lt;Character&gt; operators = new Stack&lt;&gt;();
+
+    for (int i = 0; i &lt; tokens.length; i++) {
+        if (tokens[i] == ' ') {
+            continue;
+        } else if (tokens[i] &gt;= '0' &amp;&amp; tokens[i] &lt;= '9') {
+            StringBuilder sb = new StringBuilder();
+            while (i &lt; tokens.length &amp;&amp; (tokens[i] &gt;= '0' &amp;&amp; tokens[i] &lt;= '9' || tokens[i] == '.')) {
+                sb.append(tokens[i++]);
+            }
+            values.push(Double.parseDouble(sb.toString()));
+            i--;
+        } else if (tokens[i] == '(') {
+            operators.push(tokens[i]);
+        } else if (tokens[i] == ')') {
+            while (operators.peek() != '(') {
+                double val2 = values.pop();
+                double val1 = values.pop();
+                char op = operators.pop();
+
+                values.push(applyOp(op, val1, val2));
+            }
+            operators.pop();
+        } else if (tokens[i] == '+' || tokens[i] == '-' || tokens[i] == '*' || tokens[i] == '/' || tokens[i] == '^') {
+            while (!operators.empty() &amp;&amp; precedence(tokens[i]) &lt;= precedence(operators.peek())) {
+                double val2 = values.pop();
+                double val1 = values.pop();
+                char op = operators.pop();
+                values.push(applyOp(op, val1, val2));
+            }
+            operators.push(tokens[i]);
+        }
+    }
+
+    while (!operators.empty()) {
+        double val2 = values.pop();
+        double val1 = values.pop();
+        char op = operators.pop();
+
+        values.push(applyOp(op, val1, val2));
+    }
+
+    return values.pop();
+}
+
+/*public static void main(String[] args) {
+    String expression = &quot;(2+3)/3&quot;;
+    System.out.println(evaluate(expression));
+}*/
+</code></pre>
+<p>}</p>
+<p>//  HandleListener.java</p>
+<p>import java.awt.event.*;<br>
+public class HandleListener implements ActionListener {<br>
+WindowDocument view;<br>
+public void setView(WindowDocument view) {<br>
+this.view = view;<br>
+}<br>
+public void actionPerformed(ActionEvent e) {<br>
+String str=e.getActionCommand();<br>
+if(str.equals(&quot;表达式求值&quot;))<br>
+{<br>
+view.textChangeListener.setXuanze(&quot;表达式求值&quot;);<br>
+}<br>
+else if(str.equals(&quot;堆排序&quot;))<br>
+{<br>
+view.textChangeListener.setXuanze(&quot;堆排序&quot;);<br>
+}<br>
+else if(str.equals(&quot;KMP算法进行字符串查找&quot;))<br>
+{view.textChangeListener.setXuanze(&quot;KMP算法进行字符串查找&quot;);}</p>
+<pre><code>}
+</code></pre>
+<p>}</p>
+<p>//  HeapSort.java</p>
+<p>public class HeapSort {</p>
+<pre><code>public void sort(int arr[]) {
+    int n = arr.length;
+
+    // 构建最大堆
+    for (int i = n / 2 - 1; i &gt;= 0; i--)
+        heapify(arr, n, i);
+
+    // 逐个提取最大的元素并将其放在数组末尾
+    for (int i=n-1; i&gt;=0; i--) {
+        int temp = arr[0];
+        arr[0] = arr[i];
+        arr[i] = temp;
+
+        //恢复堆的性质
+        heapify(arr, i, 0);
+    }
+}
+
+// 调整堆
+void heapify(int arr[], int n, int i) {
+    int largest = i;
+    int l = 2*i + 1;
+    int r = 2*i + 2;
+
+    // 如果左侧子节点大于父节点
+    if (l &lt; n &amp;&amp; arr[l] &gt; arr[largest])
+        largest = l;
+
+    // 如果右侧子节点大于父节点
+    if (r &lt; n &amp;&amp; arr[r] &gt; arr[largest])
+        largest = r;
+
+    // 如果最大元素不是根节点
+    if (largest != i) {
+        int swap = arr[i];
+        arr[i] = arr[largest];
+        arr[largest] = swap;
+
+        // 对子树递归执行堆化操作
+        heapify(arr, n, largest);
+    }
+}
+
+/* 测试代码 */
+</code></pre>
+<p>/* public static void main(String args[]) {<br>
+int arr[] = {12, 11, 13, 5, 6, 7};<br>
+int n = arr.length;</p>
+<pre><code>    HeapSort ob = new HeapSort();
+    ob.sort(arr);
+
+    System.out.println(&quot;排序后的数组:&quot;);
+    for (int i=0; i&lt;n; ++i)
+        System.out.print(arr[i]+&quot; &quot;);
+}*/
+</code></pre>
+<p>}</p>
+<p>//  Kmps.java</p>
+<p>public class Kmps {<br>
+public static int search(String text, String pattern) {<br>
+int[] lps = computeLPSArray(pattern);<br>
+int i = 0, j = 0;<br>
+int count = 0;<br>
+while (i &lt; text.length()) {<br>
+if (text.charAt(i) == pattern.charAt(j)) {<br>
+i++;<br>
+j++;<br>
+}<br>
+if (j == pattern.length()) {<br>
+count++;<br>
+j = lps[j - 1];<br>
+} else if (i &lt; text.length() &amp;&amp; text.charAt(i) != pattern.charAt(j)) {<br>
+if (j != 0) {<br>
+j = lps[j - 1];<br>
+} else {<br>
+i++;<br>
+}<br>
+}<br>
+}<br>
+return count;<br>
+}</p>
+<pre><code>private static int[] computeLPSArray(String pattern) {
+    int[] lps = new int[pattern.length()];
+    int i = 0, j = 1;
+    while (j &lt; pattern.length()) {
+        if (pattern.charAt(j) == pattern.charAt(i)) {
+            lps[j] = i + 1;
+            i++;
+            j++;
+        } else if (i != 0) {
+            i = lps[i - 1];
+        } else {
+            j++;
+        }
+    }
+    return lps;
+}
+
+    /*public static void main(String[] args) {
+        String text = &quot;1232345123431236327123&quot;;
+        String pattern = &quot;123&quot;;
+        int count = search(text, pattern);
+        if (count == 0) {
+            System.out.println(&quot;Pattern not found in the text&quot;);
+        } else {
+            System.out.println(&quot;Pattern found &quot; + count + &quot; times in the text&quot;);
+        }
+    }*/
+</code></pre>
+<p>}</p>
+<p>//  TextListener.java</p>
+<p>import javax.swing.event.DocumentListener;<br>
+import javax.swing.event.DocumentEvent;<br>
+import java.util.Arrays;</p>
+<p>public class TextListener implements DocumentListener {<br>
+WindowDocument view;<br>
+public String xuanze;<br>
+int x;<br>
+public void setXuanze(String xuanze){<br>
+this.xuanze=xuanze;<br>
+if(xuanze.equals(&quot;表达式求值&quot;)){<br>
+x=1;<br>
+} else if(xuanze.equals(&quot;堆排序&quot;))<br>
+{<br>
+x=2;<br>
+}else if(xuanze.equals(&quot;KMP算法进行字符串查找&quot;)){<br>
+x=3;<br>
+}<br>
+}<br>
+public void setView(WindowDocument view) {<br>
+this.view = view;</p>
+<pre><code>}
+
+public void changedUpdate(DocumentEvent e) {
+    if(x==1)
+    {
+        String str1 = view.inputText.getText();
+        ExpressionEvaluation ep=new ExpressionEvaluation();
+        view.showText.setText(null);
+        view.showText.append(&quot;表达式的值为: &quot; + ep.evaluate(str1));
+    }else if(x==2) {
+        String str = view.inputText.getText();
+        //空格
+
+        String regex = &quot;[\\s]+&quot;;
+        String words[] = str.split(regex);
+
+        int num[] = new int[words.length];
+        for (int i = 0; i &lt; words.length; i++)
+            num[i] = Integer.parseInt(words[i]);//
+
+           /* for (int i = 0; i &lt; words.length - 1; i++) {
+                for (int j = 0; j &lt; words.length - 1 - i; j++) {
+                    if (num[j] &lt; num[j + 1]) {
+                        int x = num[j];
+                        num[j] = num[j + 1];
+                        num[j + 1] = x;
+                    }
+                }
+            }*/
+        // Arrays.sort(num);      //按字典序从小到大排序
+
+        HeapSort ob = new HeapSort();
+        ob.sort(num);
+        String words2[] = new String[words.length];
+        for (int i = 0; i &lt; words.length; i++)
+            words2[i] = String.valueOf(num[i]);
+        view.showText.setText(null);
+        for (int i = 0; i &lt; words.length; i++)
+            view.showText.append(words2[i] + &quot;,&quot;);
+    }else if(x==3)
+    {
+        String str3 = view.inputText.getText();
+        //空格
+
+        String regex = &quot;[\\s]+&quot;;
+        String words3[] = str3.split(regex);
+        String text = words3[0];
+        String pattern = words3[1];
+        Kmps k=new Kmps();
+        int count = k.search(text, pattern);
+        if (count == 0) {
+            view.showText.append(&quot;没找到&quot;);
+
+        } else {
+            view.showText.append(&quot;找到了 &quot; + count +  &quot;次&quot;);
+
+        }
+    }
+}
+public void removeUpdate(DocumentEvent e) {
+    changedUpdate(e);
+}
+public void insertUpdate(DocumentEvent e) {
+    changedUpdate(e);
+}
+</code></pre>
+<p>}</p>
+<p>//  WindowDocument.java</p>
+<p>import java.awt.<em>;<br>
+import javax.swing.</em>;<br>
+import javax.swing.text.Document;<br>
+public class WindowDocument extends JFrame {<br>
+/**<br>
+*<br>
+*/<br>
+private static final long serialVersionUID = -4158929136133563216L;<br>
+JTextArea inputText,showText; //文本输入区，文本展示区<br>
+JMenuBar menubar;//菜单条<br>
+JMenu menu;//菜单项<br>
+JMenuItem  item1,item2,item3;//菜单<br>
+TextListener textChangeListener;  //inputText的监视器<br>
+HandleListener handleListener;  //itemCopy,itemCut,itemPaste的监视器<br>
+WindowDocument() {<br>
+init();<br>
+setLayout(new FlowLayout());</p>
+<pre><code>    setVisible(true);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+}
+void init() {
+    inputText = new JTextArea(10,28);
+    showText = new JTextArea(10,28);
+    showText.setLineWrap(true);       //文本自动回行
+    showText.setWrapStyleWord(true);  //文本区以单词为界自动换行
+    Font font = new Font(&quot;宋体&quot;,Font.PLAIN,25);
+    inputText.setFont(font);
+    showText.setFont(font);
+    menubar=new JMenuBar();
+    menu=new JMenu(&quot;选择&quot;);
+    item1=new JMenuItem(&quot;表达式求值&quot;);
+    item2=new JMenuItem(&quot;堆排序&quot;);
+    item3=new JMenuItem(&quot;KMP算法进行字符串查找&quot;);
+
+    item1.setActionCommand(&quot;表达式求值&quot;);
+    item2.setActionCommand(&quot;堆排序&quot;);
+    item3.setActionCommand(&quot;KMP算法进行字符串查找&quot;);
+    menu.setFont(font);
+
+    menu.add(item1);
+    menu.add(item2);
+    menu.add(item3);
+    menubar.add(menu);
+    setJMenuBar(menubar);
+    add(new JScrollPane(inputText));
+    add(new JScrollPane(showText));
+    textChangeListener = new TextListener();//监视器
+    handleListener = new HandleListener(); //监视器
+    textChangeListener.setView(this);
+    handleListener.setView(this);
+    Document document =inputText.getDocument();//获取输入区的文档，放入Document中
+    document.addDocumentListener(textChangeListener);//向文档注册监视器
+    item1.addActionListener(handleListener);  //向菜单项注册监视器
+    item2.addActionListener(handleListener);
+    item3.addActionListener(handleListener);
+}
+</code></pre>
+<p>}</p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://L1n2316490964.github.io/post/hello-gridea/">
+              <h3 class="post-title">
+                Hello Gridea
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://L1n2316490964.github.io//atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
